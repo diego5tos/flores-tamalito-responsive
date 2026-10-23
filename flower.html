@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/flowers.png" type="image/x-icon" />
+    <title>Para mi Brianita</title>
+    <style>
+      *,
+      *::after,
+      *::before {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --color-bg: linear-gradient(to top, #010329, #000005);
+        --color-glass: linear-gradient(to left, #142544, #1a9092);
+        --color-water: linear-gradient(to left, #142544, #1b6d6e);
+        /* Colores para el tulipán (Amarillo/Naranja) */
+        --tulip-color-1: #ffd700; 
+        --tulip-color-2: #ffaa00; 
+        --tulip-color-3: #ff8c00; 
+        --color-stem: linear-gradient(to top, #0f5115, #359627);
+        --color-leaf: linear-gradient(to top, #156d1c, #3ebb2f);
+      }
+
+      body {
+        background-image: var(--color-bg);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        overflow: hidden;
+        font-family: 'Arial', sans-serif;
+      }
+
+      .titulo {
+        position: absolute;
+        top: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        color: #fff;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 300;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        z-index: 100;
+        width: 90%;
+        line-height: 1.5;
+      }
+
+      .flowers {
+        position: relative;
+        transform: scale(0.9);
+      }
+
+      .flower {
+        position: absolute;
+        bottom: 10vmin;
+        transform-origin: bottom center;
+        z-index: 10;
+        --fl-speed: 0.8s;
+      }
+
+      .flower--1 {
+        animation: moving-flower-1 4s linear infinite;
+      }
+
+      .flower--2 {
+        left: 50vmin;
+        transform: scale(0.8);
+        animation: moving-flower-2 4s linear infinite;
+      }
+
+      .flower--3 {
+        left: -50vmin;
+        transform: scale(0.8);
+        animation: moving-flower-3 4s linear infinite;
+      }
+
+      /* === TALLO === */
+      .flower__line {
+        height: 55vmin;
+        width: 1.5vmin;
+        background-image: var(--color-stem);
+        border-radius: 4vmin;
+        position: relative;
+      }
+
+      /* === CABEZA DEL TULIPÁN === */
+      .flower__leafs {
+        position: absolute;
+        top: -6vmin; 
+        left: -2vmin; 
+        width: 6vmin;
+        height: 8vmin;
+        transform-origin: bottom center;
+        animation: blooming-tulip 2s ease-in-out forwards;
+      }
+
+      .flower__leafs::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translate(-15%, -20%);
+        width: 6vmin;
+        height: 6vmin;
+        background-color: var(--tulip-color-3);
+        filter: blur(10px);
+        z-index: -1;
+      }
+
+      /* === PÉTALOS DEL TULIPÁN === */
+      .flower__leaf {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 5vmin;
+        height: 9vmin;
+        background: linear-gradient(to bottom, var(--tulip-color-1), var(--tulip-color-2));
+        border-radius: 50% 50% 30% 30% / 70% 70% 40% 40%;
+        transform-origin: bottom center;
+        box-shadow: inset 0 0 2vmin rgba(255, 100, 0, 0.4);
+      }
+
+      .flower__leaf--1 {
+        transform: translateX(-80%) rotate(-15deg);
+        background: linear-gradient(to bottom, var(--tulip-color-2), var(--tulip-color-3));
+        z-index: 1;
+      }
+
+      .flower__leaf--2 {
+        transform: translateX(-20%) rotate(15deg);
+        background: linear-gradient(to bottom, var(--tulip-color-2), var(--tulip-color-3));
+        z-index: 1;
+      }
+
+      .flower__leaf--3 {
+        transform: translateX(-60%) translateY(1vmin) rotate(-5deg);
+        z-index: 2;
+      }
+
+      .flower__leaf--4 {
+        transform: translateX(-40%) translateY(1vmin) rotate(5deg);
+        z-index: 3; 
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .flower__white-circle {
+        display: none; 
+      }
+
+      /* === HOJAS DEL TALLO === */
+      .flower__line__leaf {
+        position: absolute;
+        width: 6vmin;
+        height: 18vmin;
+        background-image: var(--color-leaf);
+        border-radius: 100% 0% 100% 0% / 100% 0% 100% 0%;
+        transform-origin: bottom left;
+        opacity: 0.9;
+      }
+
+      .flower__line__leaf--1 { top: 20%; left: 0; transform: rotate(-30deg); }
+      .flower__line__leaf--2 { top: 40%; left: 0; transform: rotate(-10deg) scale(-1, 1); border-radius: 0% 100% 0% 100% / 0% 100% 0% 100%; }
+      .flower__line__leaf--3 { top: 60%; left: 0; transform: rotate(-25deg); }
+      .flower__line__leaf--4 { top: 75%; left: 0; transform: rotate(-5deg) scale(-1, 1); border-radius: 0% 100% 0% 100% / 0% 100% 0% 100%; }
+
+      /* === LUCES FLOTANTES === */
+      .flower__light {
+        position: absolute;
+        bottom: 0vmin;
+        width: 1vmin;
+        height: 1vmin;
+        background-color: rgb(255, 251, 0);
+        border-radius: 50%;
+        filter: blur(0.2vmin);
+        animation: light-ans 4s linear infinite backwards;
+      }
+
+      .flower__light--1 { left: -2vmin; animation-delay: 1s; }
+      .flower__light--2 { left: 3vmin; animation-delay: 0.5s; }
+      .flower__light--3 { left: -6vmin; animation-delay: 0.3s; }
+      .flower__light--4 { left: 6vmin; animation-delay: 0.9s; }
+      .flower__light--5 { left: -1vmin; animation-delay: 1.5s; }
+      .flower__light--6 { left: -4vmin; animation-delay: 3s; }
+      .flower__light--7 { left: 3vmin; animation-delay: 2s; }
+      .flower__light--8 { left: -6vmin; animation-delay: 3.5s; }
+
+      /* === PASTO === */
+      .growing-grass { animation: grow-grass-ans 2s forwards; }
+      .leaf {
+        width: 2vmin;
+        height: 15vmin;
+        background-image: var(--color-leaf);
+        border-radius: 100% 0% 100% 0%;
+        transform-origin: bottom;
+      }
+      .long-g {
+        position: absolute;
+        bottom: 0;
+        left: -20vmin;
+        transform-origin: bottom left;
+      }
+
+      /* === ANIMACIONES === */
+      @keyframes blooming-tulip { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+      @keyframes light-ans {
+        0% { opacity: 0; transform: translateY(0vmin); }
+        25% { opacity: 1; transform: translateY(-5vmin) translateX(-2vmin); }
+        50% { opacity: 1; transform: translateY(-15vmin) translateX(2vmin); filter: blur(0.2vmin); }
+        75% { transform: translateY(-20vmin) translateX(-2vmin); filter: blur(0.2vmin); }
+        100% { transform: translateY(-30vmin); opacity: 0; filter: blur(1vmin); }
+      }
+      @keyframes moving-flower-1 { 0%, 100% { transform: rotate(2deg); } 50% { transform: rotate(-2deg); } }
+      @keyframes moving-flower-2 { 0%, 100% { transform: scale(0.8) rotate(4deg); } 50% { transform: scale(0.8) rotate(-4deg); } }
+      @keyframes moving-flower-3 { 0%, 100% { transform: scale(0.8) rotate(-4deg); } 50% { transform: scale(0.8) rotate(4deg); } }
+      @keyframes grow-grass-ans { 0% { transform: scaleY(0); } 100% { transform: scaleY(1); } }
+
+      /* ======================================================== */
+      /* ======== DISEÑO RESPONSIVO (TELÉFONOS MÓVILES) ========= */
+      /* ======================================================== */
+      @media (max-width: 768px) {
+        .titulo {
+          font-size: 1.1rem; /* Texto más pequeño */
+          top: 5%; /* Un poco más arriba */
+        }
+        .flowers {
+          transform: scale(0.6); /* Hacemos todas las flores más pequeñas */
+          bottom: 5vmin;
+        }
+        .flower--2 {
+          left: 30vmin; /* Acercamos la flor derecha al centro */
+        }
+        .flower--3 {
+          left: -30vmin; /* Acercamos la flor izquierda al centro */
+        }
+      }
+
+      /* Pantallas de teléfonos aún más delgados */
+      @media (max-width: 480px) {
+        .titulo {
+          font-size: 1rem;
+        }
+        .flowers {
+          transform: scale(0.5); /* Aún más pequeñas */
+        }
+        .flower--2 {
+          left: 25vmin; /* Más juntas */
+        }
+        .flower--3 {
+          left: -25vmin; /* Más juntas */
+        }
+        .long-g {
+          left: -15vmin; /* Ajustamos la posición del pasto lateral */
+        }
+      }
+    </style>
+  </head>
+  <body class="container">
+    <audio src="sound/tulipanes.mp3" autoplay loop></audio>
+    
+    <div id="lyrics"></div>
+    
+    <h1 class="titulo">
+      Mas que sabes que yo soy inmune. <br> <br>
+      A tu perfume.<br> <br>
+      De tu cuerpo emanas paz, es tu forma natural. <br> <br>
+      Feliz mes mi Brianita, te quiero. ^^
+    </h1> 
+
+    <div class="night"></div>
+    
+    <div class="flowers">
+      <!-- TULIPAN 1 -->
+      <div class="flower flower--1">
+        <div class="flower__leafs flower__leafs--1">
+          <div class="flower__leaf flower__leaf--1"></div>
+          <div class="flower__leaf flower__leaf--2"></div>
+          <div class="flower__leaf flower__leaf--3"></div>
+          <div class="flower__leaf flower__leaf--4"></div>
+          <div class="flower__white-circle"></div>
+
+          <div class="flower__light flower__light--1"></div>
+          <div class="flower__light flower__light--2"></div>
+          <div class="flower__light flower__light--3"></div>
+          <div class="flower__light flower__light--4"></div>
+          <div class="flower__light flower__light--5"></div>
+          <div class="flower__light flower__light--6"></div>
+          <div class="flower__light flower__light--7"></div>
+          <div class="flower__light flower__light--8"></div>
+        </div>
+        <div class="flower__line">
+          <div class="flower__line__leaf flower__line__leaf--1"></div>
+          <div class="flower__line__leaf flower__line__leaf--2"></div>
+          <div class="flower__line__leaf flower__line__leaf--3"></div>
+          <div class="flower__line__leaf flower__line__leaf--4"></div>
+          <div class="flower__line__leaf flower__line__leaf--5"></div>
+          <div class="flower__line__leaf flower__line__leaf--6"></div>
+        </div>
+      </div>
+
+      <!-- TULIPAN 2 -->
+      <div class="flower flower--2">
+        <div class="flower__leafs flower__leafs--2">
+          <div class="flower__leaf flower__leaf--1"></div>
+          <div class="flower__leaf flower__leaf--2"></div>
+          <div class="flower__leaf flower__leaf--3"></div>
+          <div class="flower__leaf flower__leaf--4"></div>
+          <div class="flower__white-circle"></div>
+
+          <div class="flower__light flower__light--1"></div>
+          <div class="flower__light flower__light--2"></div>
+          <div class="flower__light flower__light--3"></div>
+          <div class="flower__light flower__light--4"></div>
+          <div class="flower__light flower__light--5"></div>
+          <div class="flower__light flower__light--6"></div>
+          <div class="flower__light flower__light--7"></div>
+          <div class="flower__light flower__light--8"></div>
+        </div>
+        <div class="flower__line">
+          <div class="flower__line__leaf flower__line__leaf--1"></div>
+          <div class="flower__line__leaf flower__line__leaf--2"></div>
+          <div class="flower__line__leaf flower__line__leaf--3"></div>
+          <div class="flower__line__leaf flower__line__leaf--4"></div>
+        </div>
+      </div>
+
+      <!-- TULIPAN 3 -->
+      <div class="flower flower--3">
+        <div class="flower__leafs flower__leafs--3">
+          <div class="flower__leaf flower__leaf--1"></div>
+          <div class="flower__leaf flower__leaf--2"></div>
+          <div class="flower__leaf flower__leaf--3"></div>
+          <div class="flower__leaf flower__leaf--4"></div>
+          <div class="flower__white-circle"></div>
+
+          <div class="flower__light flower__light--1"></div>
+          <div class="flower__light flower__light--2"></div>
+          <div class="flower__light flower__light--3"></div>
+          <div class="flower__light flower__light--4"></div>
+          <div class="flower__light flower__light--5"></div>
+          <div class="flower__light flower__light--6"></div>
+          <div class="flower__light flower__light--7"></div>
+          <div class="flower__light flower__light--8"></div>
+        </div>
+        <div class="flower__line">
+          <div class="flower__line__leaf flower__line__leaf--1"></div>
+          <div class="flower__line__leaf flower__line__leaf--2"></div>
+          <div class="flower__line__leaf flower__line__leaf--3"></div>
+          <div class="flower__line__leaf flower__line__leaf--4"></div>
+        </div>
+      </div>
+
+      <!-- PASTO -->
+      <div class="grow-ans" style="--d: 1.2s">
+        <div class="flower__g-long">
+          <div class="flower__g-long__top"></div>
+          <div class="flower__g-long__bottom"></div>
+        </div>
+      </div>
+
+      <div class="growing-grass">
+        <div class="flower__grass flower__grass--1">
+          <div class="flower__grass--top"></div>
+          <div class="flower__grass--bottom"></div>
+          <div class="flower__grass__leaf flower__grass__leaf--1"></div>
+          <div class="flower__grass__leaf flower__grass__leaf--2"></div>
+          <div class="flower__grass__leaf flower__grass__leaf--3"></div>
+          <div class="flower__grass__leaf flower__grass__leaf--4"></div>
+          <div class="flower__grass__leaf flower__grass__leaf--5"></div>
+          <div class="flower__grass__leaf flower__grass__leaf--6"></div>
+          <div class="flower__grass__leaf flower__grass__leaf--7"></div>
+          <div class="flower__grass__leaf flower__grass__leaf--8"></div>
+          <div class="flower__grass__overlay"></div>
+        </div>
+      </div>
+
+      <div class="grow-ans" style="--d: 2.4s">
+        <div class="flower__g-right flower__g-right--1"><div class="leaf"></div></div>
+      </div>
+      
+      <div class="long-g long-g--0">
+        <div class="grow-ans" style="--d: 3s"><div class="leaf leaf--0"></div></div>
+        <div class="grow-ans" style="--d: 2.2s"><div class="leaf leaf--1"></div></div>
+        <div class="grow-ans" style="--d: 3.4s"><div class="leaf leaf--2"></div></div>
+      </div>
+    </div>
+
+    <!-- JS Integrado para reproducir audio al tocar la pantalla (Necesario en celulares) -->
+    <script>
+      window.onload = () => {
+        // En los teléfonos móviles, el audio no suele reproducirse automáticamente 
+        // hasta que el usuario toca la pantalla. Este código lo asegura.
+        document.body.addEventListener("click", () => {
+            let audio = document.querySelector('audio');
+            if(audio && audio.paused) {
+                audio.play();
+            }
+        });
+      };
+    </script>
+    
+    <!-- Si tienes scripts extra de animaciones para las letras, los puedes poner aquí -->
+    <!-- <script src="anim.js"></script> -->
+    <!-- <script src="main.js"></script> -->
+  </body>
+</html>
